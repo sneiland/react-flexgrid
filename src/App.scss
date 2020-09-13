@@ -1,0 +1,36 @@
+body {
+	background-color: #333;
+}
+
+
+.flexgrid--container.blue {
+	background-color: rgb(200, 200, 255);
+	height: 200px;
+
+	.flexgrid--container-column {
+		&:first-child {
+			.flexgrid--container-column-row {
+				background-color: rgb(135, 135, 230);
+			}
+		}
+
+		&-header {
+			background-color: #eee;
+		}
+
+		&-headerContent {
+			text-align: center;
+			padding: 10px;
+		}
+
+		&-rowContent {
+			padding: 10px;
+		}
+
+		input {
+			margin:0 0 0 5px;
+			
+		}
+
+	}
+}

@@ -1,0 +1,69 @@
+.flexgrid {
+
+
+	&--wrapper {
+		position: relative;
+	}
+
+	&--container {
+		display: flex;
+		overflow-y: hidden;
+		border: solid 1px #aaa;
+
+		&.fixedFirstColumn {
+			.flexgrid--container-column:first-child {
+				position: -webkit-sticky;
+				position: sticky;
+				left: 0;
+				z-index: 30;
+			}
+		}
+	
+		&-column {
+			display: inline-flex;
+			flex-direction: column;
+			flex-grow: 1;
+			z-index: 10;
+			
+			&:first-child {
+				.flexgrid--container-column-header, .flexgrid--container-column-row {
+					border-left: none;
+				}
+			}
+
+			&-header {
+				text-align: center;
+				background-color: #eee;
+				display: block;
+				border-left: solid 1px #aaa;
+			}
+
+			&-headerContent {
+				white-space: nowrap;
+			}
+
+			&-row {
+				border-left: solid 1px #aaa;
+			}
+
+			&-rowContent{
+				height: inherit;
+				white-space: nowrap;
+				display: block;
+			}
+		}
+	}
+}
+
+
+.flexgrid--container.fixedHeader {
+	overflow: auto;
+
+	.flexgrid--container-column-header {
+		position: -webkit-sticky;
+		position: sticky;
+		top: 0;
+		z-index: 20;
+	}
+}
+
