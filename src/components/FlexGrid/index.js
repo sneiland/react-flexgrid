@@ -11,12 +11,13 @@ export default class FlexGrid extends Component {
 		this.columns.current = [];
 		this.namespace = `ResponsiveGrid_${Math.floor((Math.random() * 1000000) + 1)}`;
 		
-		this.columnWidths = [];
 		this.scrollIndex = this.props.startColumnIndex;
 		this.resizeTimer = null;
 
 		this.state = {
-			columnRowHeights: []
+			columnRowHeights: [],
+			columnWidths: [],
+			containerWidth: 0
 		};
 	}
 
@@ -65,6 +66,10 @@ export default class FlexGrid extends Component {
 		return document.getElementById(
 			`${this.namespace}_column_${columnIndex}`
 		).clientWidth;
+	}
+
+	getContainerWidth() {
+		return document.getElementById(this.namespace).clientWidth
 	}
 
 	/**
@@ -119,7 +124,7 @@ export default class FlexGrid extends Component {
 			this.scrollIndex = index;
 		}
 
-		const leftColumns = this.columnWidths.slice(sliceStart,this.scrollIndex);
+		const leftColumns = this.state.columnWidths.slice(sliceStart,this.scrollIndex);
 		const scrollLeft = leftColumns.reduce((accumulator,current)=>{
 			return accumulator + current;
 		},0);
@@ -135,14 +140,15 @@ export default class FlexGrid extends Component {
 
 	scrollToColumnCentered(index){
 		console.group('scrollToColumnCentered');
-		const firstWidth = document.getElementById(`${this.namespace}_column_0`).clientWidth;
-		const containerWidth = document.getElementById(this.namespace).clientWidth;
-		const selectedColumnWidth = document.getElementById(`${this.namespace}_column_${index}`).clientWidth;
-		const totalWidth = this.columnWidths.reduce((accumulator,current)=>{
+
+		const { columnWidths, containerWidth } = this.state;
+		const firstWidth = this.getColumnWidth(0);
+		const selectedColumnWidth = this.getColumnWidth(index);
+		const totalWidth = columnWidths.reduce((accumulator,current)=>{
 			return accumulator + current;
 		},0);
 		
-		console.log( this.columnWidths );
+		console.log( columnWidths );
 		console.info( 'firstWidth', firstWidth );
 		console.info( 'containerWidth', containerWidth );
 		console.info('selectedColumnWidth',selectedColumnWidth);
@@ -150,7 +156,7 @@ export default class FlexGrid extends Component {
 		if( this.props.firstColumnFixed ){
 
 		} else {
-			const leftColumnsWidth = this.columnWidths.slice(0,index).reduce((accumulator,current)=>{
+			const leftColumnsWidth = columnWidths.slice(0,index).reduce((accumulator,current)=>{
 				return accumulator + current;
 			},0);
 
@@ -163,7 +169,6 @@ export default class FlexGrid extends Component {
 			if( this.props.snapScrollToColumn ){
 				// If the targetPosition is not an exact match for a column start position scroll right to the next column
 
-
 				// get total columns fully visible left
 				// get total columns fully visible right
 				// sum the 2 values plus the selected column width
@@ -174,8 +179,8 @@ export default class FlexGrid extends Component {
 				// if right is closer snap to the left column plus its own width
 
 				let widthsTotal = 0;
-				for( var i=0; i<=this.columnWidths.length; i++ ){
-					widthsTotal += this.columnWidths[i];
+				for( var i=0; i<=columnWidths.length; i++ ){
+					widthsTotal += columnWidths[i];
 					if( widthsTotal >= targetPosition ){
 						targetPosition = widthsTotal;
 						break;
@@ -184,17 +189,13 @@ export default class FlexGrid extends Component {
 			}
 
 			console.log( targetPosition );
-
 			console.info( 'targetPosition', targetPosition );
 
 			if( targetPosition > 0 ){
-				document.getElementById(this.namespace).scrollLeft = targetPosition;
+				this.setScrollLeft(targetPosition);
 			}
 
-
 			//const selectedColumnStart = 
-
-			
 		}
 		console.groupEnd();
 	}
@@ -223,9 +224,34 @@ export default class FlexGrid extends Component {
 	}
 
 	updateWidths = () => {
-		this.columnWidths = this.props.data.map((column,index)=>{
-			return this.getColumnWidth(index);
+		this.setState(()=>{
+			const columnWidths = this.props.data.map((column,index)=>{
+				return this.getColumnWidth(index);
+			});
+			const containerWidth = this.getContainerWidth();
+
+			return {
+				columnWidths, 
+				containerWidth
+			};
 		});
+	}
+
+	renderNav(){
+		const totalWidths = this.state.columnWidths.reduce((accumulator,current)=>{
+			return accumulator + current;
+		},0);
+
+		if( totalWidths <= this.state.containerWidth ){
+			return null;
+		}
+
+		return (
+			<div className="flexgrid--nav">
+				<button onClick={()=>{this.scrollToColumn(this.scrollIndex-1)}} >&laquo;</button>
+				<button onClick={()=>{this.scrollToColumn(this.scrollIndex+1)}} className="flexgrid--nav-right">&raquo;</button>
+			</div>
+		);
 	}
 
 	render(){
@@ -255,11 +281,7 @@ export default class FlexGrid extends Component {
 				<div className={className} id={this.namespace}>
 					{columns}
 				</div>
-				
-				<div className="flexgrid--nav">
-					<button onClick={()=>{this.scrollToColumn(this.scrollIndex-1)}} >&laquo;</button>
-					<button onClick={()=>{this.scrollToColumn(this.scrollIndex+1)}} className="flexgrid--nav-right">&raquo;</button>
-				</div>
+				{this.renderNav()}
 			</>
 		);
 	}
@@ -274,7 +296,6 @@ FlexGrid.propTypes = {
 	fixedHeader: PropTypes.bool,
 
 	firstColumnFixed: PropTypes.bool,
-
 	startColumnIndex: PropTypes.number,
 	startColumnCentered: PropTypes.bool,
 	snapScrollToColumn: PropTypes.bool,
