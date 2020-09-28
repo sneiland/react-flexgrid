@@ -5,13 +5,13 @@ body {
 }
 
 
-.flexgrid--container.blue {
+.flexgrid--main.blue {
 	background-color: rgb(200, 200, 255);
 	//height: 200px;
 
-	.flexgrid--container-column {
+	.flexgrid--main-column {
 		&:first-child {
-			.flexgrid--container-column-row {
+			.flexgrid--main-column-row {
 				background-color: rgb(135, 135, 230);
 			}
 		}

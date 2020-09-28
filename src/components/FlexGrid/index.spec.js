@@ -12,7 +12,7 @@ describe("FlexGrid component", () => {
 			return 0;
 		});
 
-		FlexGridColumn.prototype.getContainerWidth = jest.fn(() => {
+		FlexGridColumn.prototype.getMainWidth = jest.fn(() => {
 			return 0;
 		});
 		FlexGridColumn.prototype.getColumnWidth = jest.fn(() => {
@@ -23,7 +23,7 @@ describe("FlexGrid component", () => {
 	describe("when data is supplied", () => {
 		it("renders a column for each datapoint", () => {
 			component = mount(<FlexGrid data={testdata} />);
-			expect(component.find(".FlexGrid--container-column").length).toBe(testdata.length);
+			expect(component.find(".FlexGrid--main-column").length).toBe(testdata.length);
 		});
 	});
 });

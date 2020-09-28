@@ -15,18 +15,18 @@ export default class FlexGrid extends Component {
 		this.scrollIndex = this.props.startColumnIndex;
 		this.resizeTimer = null;
 
-		this.containerClassName = `flexgrid--container ${this.props.className}`;
+		this.mainClassName = `flexgrid--main ${this.props.className}`;
 		if( this.props.fixedHeader ){
-			this.containerClassName += ' fixedHeader';
+			this.mainClassName += ' fixedHeader';
 		}
 		if( this.props.firstColumnFixed ){
-			this.containerClassName += ' fixedFirstColumn';
+			this.mainClassName += ' fixedFirstColumn';
 		}
 
 		this.state = {
 			columnRowHeights: [],
 			columnWidths: [],
-			containerWidth: 0
+			mainWidth: 0
 		};
 	}
 
@@ -85,12 +85,12 @@ export default class FlexGrid extends Component {
 		).clientWidth;
 	}
 
-	getContainerWidth() {
-		return this.getContainer().clientWidth
+	getMainWidth() {
+		return this.getMain().clientWidth
 	}
 
-	getContainer() {
-		return this.getWrapper().getElementsByClassName(this.containerClassName)[0];
+	getMain() {
+		return this.getContainer().getElementsByClassName(this.mainClassName)[0];
 	}
 
 	getLeftNavButton(){
@@ -98,10 +98,10 @@ export default class FlexGrid extends Component {
 	}
 
 	getNav(){
-		return this.getWrapper().getElementsByClassName("flexgrid--nav")[0];
+		return this.getContainer().getElementsByClassName("flexgrid--nav")[0];
 	}
 
-	getWrapper() {
+	getContainer() {
 		return document.getElementById(this.namespace);
 	}
 
@@ -134,7 +134,7 @@ export default class FlexGrid extends Component {
 	}
 
 	getScrollLeft() {
-		return this.getContainer().scrollLeft;
+		return this.getMain().scrollLeft;
 	}
 
 	/**
@@ -153,10 +153,7 @@ export default class FlexGrid extends Component {
 		const totalWidths = this.state.columnWidths.reduce((accumulator,current)=>{
 			return accumulator + current;
 		},0);
-
-		console.info('navvisible',this.props.showNav && totalWidths > this.state.containerWidth);
-
-		return this.props.showNav && totalWidths > this.state.containerWidth;
+		return this.props.showNav && totalWidths > this.state.mainWidth;
 	}
 
 	positionNavigation(){
@@ -198,7 +195,7 @@ export default class FlexGrid extends Component {
 	scrollToColumnCentered(index){
 		console.group('scrollToColumnCentered');
 
-		const { columnWidths, containerWidth } = this.state;
+		const { columnWidths, mainWidth } = this.state;
 		const firstWidth = this.getColumnWidth(0);
 		const selectedColumnWidth = this.getColumnWidth(index);
 		const totalWidth = columnWidths.reduce((accumulator,current)=>{
@@ -207,7 +204,7 @@ export default class FlexGrid extends Component {
 		
 		console.log( columnWidths );
 		console.info( 'firstWidth', firstWidth );
-		console.info( 'containerWidth', containerWidth );
+		console.info( 'mainWidth', mainWidth );
 		console.info('selectedColumnWidth',selectedColumnWidth);
 		console.info( 'totalWidth', totalWidth );
 		if( this.props.firstColumnFixed ){
@@ -219,7 +216,7 @@ export default class FlexGrid extends Component {
 
 			console.info( 'leftColumnsWidth', leftColumnsWidth );
 
-			let targetPosition = leftColumnsWidth - (containerWidth/2) + (selectedColumnWidth/2);
+			let targetPosition = leftColumnsWidth - (mainWidth/2) + (selectedColumnWidth/2);
 
 			console.log( targetPosition );
 
@@ -229,7 +226,7 @@ export default class FlexGrid extends Component {
 				// get total columns fully visible left
 				// get total columns fully visible right
 				// sum the 2 values plus the selected column width
-				// subtract this from the total container width
+				// subtract this from the total main width
 				// divide the remainer by 2
 				// find the column left or right which is closest in size to this value
 				// if left is closer then snap to the start of that column
@@ -258,7 +255,7 @@ export default class FlexGrid extends Component {
 	}
 
 	setScrollLeft( scrollLeft ){
-		this.getContainer().scrollLeft = scrollLeft;
+		this.getMain().scrollLeft = scrollLeft;
 	}
 
 	updateMaxHeights = (heights, columnIndex) => {
@@ -289,11 +286,11 @@ export default class FlexGrid extends Component {
 			const columnWidths = this.props.data.map((column,index)=>{
 				return this.getColumnWidth(index);
 			});
-			const containerWidth = this.getContainerWidth();
+			const mainWidth = this.getMainWidth();
 
 			return {
 				columnWidths, 
-				containerWidth
+				mainWidth
 			};
 		},
 		()=>{
@@ -329,8 +326,8 @@ export default class FlexGrid extends Component {
 		});
 
 		return (
-			<div className="flexgrid--wrapper" id={this.namespace}>
-				<div className={this.containerClassName}>
+			<div className="flexgrid--container" id={this.namespace}>
+				<div className={this.mainClassName}>
 					{columns}
 				</div>
 				{this.navVisible() ? this.renderNav() : null}
@@ -340,11 +337,11 @@ export default class FlexGrid extends Component {
 }
 
 FlexGrid.propTypes = {
-	/** An optional class to add to the container div for custom styling */
+	/** An optional class to add to the main div for custom styling */
 	className: PropTypes.string,
 	/** An array of arrays where each individual child array represent a column (ordered from left to right) of rows in descending order. */
 	data: PropTypes.arrayOf(PropTypes.array).isRequired,
-	/** Flag to enable the fixed header function in tandem with setting a fixed height rule on the container via css */
+	/** Flag to enable the fixed header function in tandem with setting a fixed height rule on the main via css */
 	fixedHeader: PropTypes.bool,
 
 	firstColumnFixed: PropTypes.bool,

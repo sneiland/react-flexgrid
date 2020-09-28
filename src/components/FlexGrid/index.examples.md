@@ -1,30 +1,30 @@
 <style>
-	.flexgrid--container.blue {
+	.flexgrid--main.blue {
 		background-color: #9999dd;
 	} 
-	.flexgrid--container.blue .flexgrid--container-column-rowContent {
+	.flexgrid--main.blue .flexgrid--main-column-rowContent {
 		padding: 10px;
 		text-align:center;
 	} 
 
-	.flexgrid--container.short{
+	.flexgrid--main.short{
 		height:100px;
 	} 
 
-	.flexgrid--container.red {
+	.flexgrid--main.red {
 		background-color: #ff99dd;
 	} 
-	.flexgrid--container.red .flexgrid--container-column:first-child .flexgrid--container-column-rowContent {
+	.flexgrid--main.red .flexgrid--main-column:first-child .flexgrid--main-column-rowContent {
 		background-color: #ff6666;
 	} 
-	.flexgrid--container.red .flexgrid--container-column-headerContent {
+	.flexgrid--main.red .flexgrid--main-column-headerContent {
 		padding:10px 5px;
 	} 
-	.flexgrid--container.red .flexgrid--container-column-rowContent {
+	.flexgrid--main.red .flexgrid--main-column-rowContent {
 		padding: 10px;
 		background-color: #ff99dd;
 	} 
-	.flexgrid--container.red .flexgrid--container-column:not(:first-child) .flexgrid--container-column-rowContent {
+	.flexgrid--main.red .flexgrid--main-column:not(:first-child) .flexgrid--main-column-rowContent {
 		text-align:center;
 	} 
 </style>
@@ -53,26 +53,26 @@ the specitivity of the styling.
 
 The basic styles are broken down as follows.  
 
-##### Outermost container
-.flexgrid--container {}
+##### Outermost main
+.flexgrid--main {}
 
 ##### A column of the grid
-.flexgrid--container-column {}
+.flexgrid--main-column {}
 
 ##### A columns header
-.flexgrid--container-column-header {}
+.flexgrid--main-column-header {}
 
 ##### The header content
-.flexgrid--container-column-headerContent {}
+.flexgrid--main-column-headerContent {}
 
-##### The rows container of a column excluding the header
-.flexgrid--container-column-rows {}
+##### The rows main of a column excluding the header
+.flexgrid--main-column-rows {}
 
-##### A single row within the rows container
-.flexgrid--container-column-row {}
+##### A single row within the rows main
+.flexgrid--main-column-row {}
 
 ##### The row content
-.flexgrid--container-column-rowContent {}
+.flexgrid--main-column-rowContent {}
 
 
 **Note**: That each row has an inner 'Content' div. This is to allow styling the rendered content of that cell independently
@@ -84,11 +84,11 @@ instead should resolve the issue.
 
 /*
 <style>
-	.flexgrid--container.blue {
+	.flexgrid--main.blue {
 		background-color: #9999dd;
 	} 
 
-	.flexgrid--container.blue .flexgrid--container-column-rowContent {
+	.flexgrid--main.blue .flexgrid--main-column-rowContent {
 		padding: 10px;
 		text-align:center;
 	} 
@@ -120,20 +120,20 @@ const data = [
 ];
 /*
 <style>
-	.flexgrid--container.red {
+	.flexgrid--main.red {
 		background-color: #ff99dd;
 	} 
-	.flexgrid--container.red .flexgrid--container-column:first-child .flexgrid--container-column-rowContent {
+	.flexgrid--main.red .flexgrid--main-column:first-child .flexgrid--main-column-rowContent {
 		background-color: #ff6666;
 	} 
-	.flexgrid--container.red .flexgrid--container-column-headerContent {
+	.flexgrid--main.red .flexgrid--main-column-headerContent {
 		padding:10px 5px;
 	} 
-	.flexgrid--container.red .flexgrid--container-column-rowContent {
+	.flexgrid--main.red .flexgrid--main-column-rowContent {
 		padding: 10px;
 		background-color: #ff99dd;
 	} 
-	.flexgrid--container.red .flexgrid--container-column:not(:first-child) .flexgrid--container-column-rowContent {
+	.flexgrid--main.red .flexgrid--main-column:not(:first-child) .flexgrid--main-column-rowContent {
 		text-align:center;
 	} 
 </style>
@@ -144,7 +144,7 @@ const data = [
 ### Fixed Header Row
 
 By default the left column of the grid remains fixed, however it is also possible to fixed the header row of the grid. To 
-do this create a class to set a fixed height on the container and set the component property fixedHeader to true.
+do this create a class to set a fixed height on the main and set the component property fixedHeader to true.
 
 ```
 const data = [
@@ -154,7 +154,7 @@ const data = [
 
 /*
 <style>
-	.flexgrid--container.short {
+	.flexgrid--main.short {
 		height: 100px;
 	}
 </style>

@@ -22,9 +22,9 @@ describe("FlexGridColumn component", () => {
 			data: testdata[0]
 		}
 		component = mount(<FlexGridColumn {...props} />);
-		expect(component.find(".FlexGrid--container-column-header").exists()).toBe(true);
-		expect(component.find(".FlexGrid--container-column-row").length).toBe(props.data.length-1);
-		expect(component.find(".FlexGrid--container-column-row").at(0).text()).toBe(props.data[1]);
+		expect(component.find(".FlexGrid--main-column-header").exists()).toBe(true);
+		expect(component.find(".FlexGrid--main-column-row").length).toBe(props.data.length-1);
+		expect(component.find(".FlexGrid--main-column-row").at(0).text()).toBe(props.data[1]);
 	});
 
 	it("renders a header and rows with defined heights", () => {
@@ -34,11 +34,11 @@ describe("FlexGridColumn component", () => {
 			rowHeights: testheights[0]
 		}
 		component = mount(<FlexGridColumn {...props} />);
-		const header = component.find(".FlexGrid--container-column-header");
+		const header = component.find(".FlexGrid--main-column-header");
 		expect(header.exists()).toBe(true);
 		expect( header.props().style.height ).toBe(testheights[0][0]);
 
-		const rows = component.find(".FlexGrid--container-column-row");
+		const rows = component.find(".FlexGrid--main-column-row");
 		expect(rows.length).toBe(props.data.length-1);
 		expect(rows.at(0).text()).toBe(props.data[1]);
 		expect(rows.at(0).props().style.height).toBe(testheights[0][1]);

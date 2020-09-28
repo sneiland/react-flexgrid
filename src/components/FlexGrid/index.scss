@@ -1,17 +1,17 @@
 .flexgrid {
 
 
-	&--wrapper {
+	&--container {
 		position: relative;
 	}
 
-	&--container {
+	&--main {
 		display: flex;
 		overflow-y: hidden;
 		border: solid 1px #aaa;
 
 		&.fixedFirstColumn {
-			.flexgrid--container-column:first-child {
+			.flexgrid--main-column:first-child {
 				position: -webkit-sticky;
 				position: sticky;
 				left: 0;
@@ -26,8 +26,8 @@
 			z-index: 10;
 			
 			&:first-child {
-				.flexgrid--container-column-header, 
-				.flexgrid--container-column-row {
+				.flexgrid--main-column-header, 
+				.flexgrid--main-column-row {
 					border-left: none;
 				}
 			}
@@ -77,10 +77,10 @@
 }
 
 
-.flexgrid--container.fixedHeader {
+.flexgrid--main.fixedHeader {
 	overflow: auto;
 
-	.flexgrid--container-column-header {
+	.flexgrid--main-column-header {
 		position: -webkit-sticky;
 		position: sticky;
 		top: 0;

@@ -62,8 +62,8 @@ export default class FlexGridColumn extends Component {
 		}
 
 		return (
-			<div className={`flexgrid--container-column-${className}`} id={rowId} style={styleObj} key={index}>
-				<div className={`flexgrid--container-column-${className}Content`}>
+			<div className={`flexgrid--main-column-${className}`} id={rowId} style={styleObj} key={index}>
+				<div className={`flexgrid--main-column-${className}Content`}>
 					{data}
 				</div>
 			</div>
@@ -80,7 +80,7 @@ export default class FlexGridColumn extends Component {
 		const columnId = `${this.props.namespace}_column_${this.props.index}`;
 
 		return (
-			<div className="flexgrid--container-column" id={columnId}>
+			<div className="flexgrid--main-column" id={columnId}>
 				{this.renderRows()}
 			</div>
 		);
