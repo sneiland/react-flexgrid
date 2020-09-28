@@ -10,9 +10,18 @@ export default class FlexGrid extends Component {
 		this.columns = React.createRef();
 		this.columns.current = [];
 		this.namespace = `ResponsiveGrid_${Math.floor((Math.random() * 1000000) + 1)}`;
+		this.leftButtonId = `${this.namespace}-left`;
 		
 		this.scrollIndex = this.props.startColumnIndex;
 		this.resizeTimer = null;
+
+		this.containerClassName = `flexgrid--container ${this.props.className}`;
+		if( this.props.fixedHeader ){
+			this.containerClassName += ' fixedHeader';
+		}
+		if( this.props.firstColumnFixed ){
+			this.containerClassName += ' fixedFirstColumn';
+		}
 
 		this.state = {
 			columnRowHeights: [],
@@ -22,17 +31,25 @@ export default class FlexGrid extends Component {
 	}
 
 	componentDidMount() {
-		this.updateWidths();
-
-		if( this.props.startColumnIndex > 0 ){
-			if( this.props.startColumnCentered ){
-				this.scrollToColumnCentered( this.props.startColumnIndex );
-			} else {
-				this.scrollToColumn( this.props.startColumnIndex );
-			}
-		}
+		const {
+			showNav,
+			startColumnCentered,
+			startColumnIndex
+		} = this.props;
 
 		this.attachEventListeners();
+		this.updateWidths();
+
+		if( showNav && startColumnIndex > 0 ){
+			clearTimeout(this.resizeTimer);
+			this.resizeTimer = setTimeout(()=>{
+				if( startColumnCentered ){
+					this.scrollToColumnCentered( this.scrollIndex );
+				} else {
+					this.scrollToColumn( this.scrollIndex );
+				}
+			},500);
+		}
 	}
 
 	componentDidUpdate(prevProps){
@@ -69,17 +86,37 @@ export default class FlexGrid extends Component {
 	}
 
 	getContainerWidth() {
-		return document.getElementById(this.namespace).clientWidth
+		return this.getContainer().clientWidth
+	}
+
+	getContainer() {
+		return this.getWrapper().getElementsByClassName(this.containerClassName)[0];
+	}
+
+	getLeftNavButton(){
+		return document.getElementById( this.leftButtonId );
+	}
+
+	getNav(){
+		return this.getWrapper().getElementsByClassName("flexgrid--nav")[0];
+	}
+
+	getWrapper() {
+		return document.getElementById(this.namespace);
 	}
 
 	/**
 	 * Returns an array of row heights where each value represents the max height of that row position across all the columns
 	 */
 	getMaxRowHeights = () => {
+		const {
+			columnRowHeights
+		} = this.state;
+
 		let maxRowHeights = [];
 
-		if( this.state.columnRowHeights.length && this.state.columnRowHeights.length === this.props.data.length ){
-			this.state.columnRowHeights.forEach((column)=>{
+		if( columnRowHeights.length && columnRowHeights.length === this.props.data.length ){
+			columnRowHeights.forEach((column)=>{
 				column.heights.forEach((rowHeight,index)=>{
 					// Set initial value for each row height if not defined 
 					if( (index+1) > maxRowHeights.length ){
@@ -97,22 +134,42 @@ export default class FlexGrid extends Component {
 	}
 
 	getScrollLeft() {
-		return document.getElementById(this.namespace).scrollLeft;
+		return this.getContainer().scrollLeft;
 	}
 
 	/**
 	 * After the user has finished resizing update the columns widths array
 	 */
 	handleResize = () => {
+		this.updateWidths();
+
 		clearTimeout(this.resizeTimer);
 		this.resizeTimer = setTimeout(()=>{
-			this.updateWidths();
 			this.scrollToColumn(this.scrollIndex);
-		},500);
+		},100);
 	}
 
-	setScrollLeft( scrollLeft ){
-		document.getElementById(this.namespace).scrollLeft = scrollLeft;
+	navVisible(){
+		const totalWidths = this.state.columnWidths.reduce((accumulator,current)=>{
+			return accumulator + current;
+		},0);
+
+		console.info('navvisible',this.props.showNav && totalWidths > this.state.containerWidth);
+
+		return this.props.showNav && totalWidths > this.state.containerWidth;
+	}
+
+	positionNavigation(){
+		const columnRowHeights = this.getMaxRowHeights();
+		const { columnWidths } = this.state;
+
+		if( columnRowHeights.length ){
+			this.getNav().style.top = `${columnRowHeights[0]}px`;
+		}
+
+		if( columnWidths.length ){
+			this.getLeftNavButton().style.left = `${columnWidths[0]}px`;
+		}
 	}
 
 	scrollToColumn(index){
@@ -200,6 +257,10 @@ export default class FlexGrid extends Component {
 		console.groupEnd();
 	}
 
+	setScrollLeft( scrollLeft ){
+		this.getContainer().scrollLeft = scrollLeft;
+	}
+
 	updateMaxHeights = (heights, columnIndex) => {
 		this.setState((prevState)=>{
 			let columnRowHeights = prevState.columnRowHeights;
@@ -234,22 +295,21 @@ export default class FlexGrid extends Component {
 				columnWidths, 
 				containerWidth
 			};
-		});
+		},
+		()=>{
+			if( this.navVisible() ){
+				this.positionNavigation();
+			}
+		}
+		);
+		
 	}
 
 	renderNav(){
-		const totalWidths = this.state.columnWidths.reduce((accumulator,current)=>{
-			return accumulator + current;
-		},0);
-
-		if( totalWidths <= this.state.containerWidth ){
-			return null;
-		}
-
 		return (
 			<div className="flexgrid--nav">
-				<button onClick={()=>{this.scrollToColumn(this.scrollIndex-1)}} >&laquo;</button>
-				<button onClick={()=>{this.scrollToColumn(this.scrollIndex+1)}} className="flexgrid--nav-right">&raquo;</button>
+				<button onClick={()=>{this.scrollToColumn(this.scrollIndex+1)}} className="flexgrid--nav-button flexgrid--nav-right">&raquo;</button>
+				<button onClick={()=>{this.scrollToColumn(this.scrollIndex-1)}} className="flexgrid--nav-button flexgrid--nav-left" id={this.leftButtonId}>&laquo;</button>
 			</div>
 		);
 	}
@@ -268,21 +328,13 @@ export default class FlexGrid extends Component {
 			);
 		});
 
-		let className = `flexgrid--container ${this.props.className}`;
-		if( this.props.fixedHeader ){
-			className += ' fixedHeader';
-		}
-		if( this.props.firstColumnFixed ){
-			className += ' fixedFirstColumn';
-		}
-
 		return (
-			<>
-				<div className={className} id={this.namespace}>
+			<div className="flexgrid--wrapper" id={this.namespace}>
+				<div className={this.containerClassName}>
 					{columns}
 				</div>
-				{this.renderNav()}
-			</>
+				{this.navVisible() ? this.renderNav() : null}
+			</div>
 		);
 	}
 }
@@ -299,6 +351,7 @@ FlexGrid.propTypes = {
 	startColumnIndex: PropTypes.number,
 	startColumnCentered: PropTypes.bool,
 	snapScrollToColumn: PropTypes.bool,
+	showNav: PropTypes.bool,
 };
 
 FlexGrid.defaultProps = {
@@ -307,5 +360,6 @@ FlexGrid.defaultProps = {
 	firstColumnFixed: true,
 	startColumnIndex: 0,
 	startColumnCentered: false,
-	snapScrollToColumn: false
+	snapScrollToColumn: false,
+	showNav: true
 };

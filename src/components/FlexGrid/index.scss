@@ -26,7 +26,8 @@
 			z-index: 10;
 			
 			&:first-child {
-				.flexgrid--container-column-header, .flexgrid--container-column-row {
+				.flexgrid--container-column-header, 
+				.flexgrid--container-column-row {
 					border-left: none;
 				}
 			}
@@ -51,6 +52,26 @@
 				white-space: nowrap;
 				display: block;
 			}
+		}
+	}
+
+	&--nav {
+		z-index: 50;
+		position: absolute;
+		top: 0;
+		width:100%;
+
+		&-button {
+			height: 50px;
+			background-color: rgba(50,255,0,0.5);
+		}
+
+		&-left {
+			position: absolute;
+		}
+
+		&-right {
+			float:right;
 		}
 	}
 }

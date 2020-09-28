@@ -1,11 +1,13 @@
 body {
 	background-color: #333;
+	margin: 50px;
+	box-sizing: border-box;
 }
 
 
 .flexgrid--container.blue {
 	background-color: rgb(200, 200, 255);
-	height: 200px;
+	//height: 200px;
 
 	.flexgrid--container-column {
 		&:first-child {
@@ -25,6 +27,7 @@ body {
 
 		&-rowContent {
 			padding: 10px;
+			text-align: center;
 		}
 
 		input {

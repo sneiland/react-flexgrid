@@ -2,7 +2,6 @@ import React from "react";
 import { mount } from "enzyme";
 import FlexGrid from "./";
 import FlexGridColumn from "./Column";
-
 import { data as testdata } from "./testdata";
 
 describe("FlexGrid component", () => {
@@ -10,6 +9,13 @@ describe("FlexGrid component", () => {
 
 	beforeAll(() => {
 		FlexGridColumn.prototype.getRowHeight = jest.fn(() => {
+			return 0;
+		});
+
+		FlexGridColumn.prototype.getContainerWidth = jest.fn(() => {
+			return 0;
+		});
+		FlexGridColumn.prototype.getColumnWidth = jest.fn(() => {
 			return 0;
 		});
 	});

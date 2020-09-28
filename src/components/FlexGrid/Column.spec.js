@@ -1,7 +1,6 @@
 import React from "react";
 import { mount, shallow } from "enzyme";
 import FlexGridColumn from "./Column";
-
 import { data as testdata, heights as testheights } from "./testdata";
 
 describe("FlexGridColumn component", () => {

@@ -64,6 +64,7 @@ export default class App extends Component {
 					startColumnIndex={3} 
 					startColumnCentered={false} 
 					firstColumnFixed={true}
+					fixedHeader={false}
 					snapScrollToColumn={false}/>
 			</div>
 		);

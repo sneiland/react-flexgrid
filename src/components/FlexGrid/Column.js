@@ -1,6 +1,9 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 
+/**
+ * FlexGridColumn - Representation of a single column of row data within the grid.
+ */
 export default class FlexGridColumn extends Component {
 
 	constructor(props){
